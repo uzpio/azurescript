@@ -2,45 +2,46 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "existingDataFactoryName": {
-      "type": "string"
-    },
     "existingDataFactoryVersion": {
       "type": "string"
     },
-    "IntegrationRuntimeName": {
+    "datafactoryId": {
+      "type": "string"
+    },
+    "virtualMachineName": {
+      "type": "string"
+    },
+    "existingVnetLocation": {
+      "type": "string"
+    },
+    "scriptUrl": {
       "type": "string"
     }
   },
-  "variables": {
-  },
+  "variables": {},
   "resources": [
     {
-      "condition": "[equals(parameters('existingDataFactoryVersion'), 'V1')]",
-      "type": "Microsoft.DataFactory/dataFactories/gateways",
-      "apiVersion": "2015-10-01",
-      "name": "[concat(parameters('existingDataFactoryName'), '/', parameters('IntegrationRuntimeName'))]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('virtualMachineName'), '/' ,parameters('virtualMachineName'), 'installGW')]",
+      "apiVersion": "2019-07-01",
+      "location": "[parameters('existingVnetLocation')]",
+      "tags": {
+        "vmname": "[parameters('virtualMachineName')]"
+      },
       "properties": {
-        "multiNodeSupportEnabled": true,
-        "description": "my integration runtime"
-      }
-    },
-    {
-      "condition": "[equals(parameters('existingDataFactoryVersion'), 'V2')]",
-      "type": "Microsoft.DataFactory/factories/integrationruntimes",
-      "apiVersion": "2018-06-01",
-      "name": "[concat(parameters('existingDataFactoryName'), '/', parameters('IntegrationRuntimeName'))]",
-      "properties": {
-        "type": "SelfHosted",
-        "description": "Self-hosted Integration runtime created using ARM template"
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.7",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": [
+            "[parameters('scriptURL')]"
+          ]
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('powershell.exe -ExecutionPolicy Unrestricted -File gatewayInstall.ps1 ', if(equals(parameters('existingDataFactoryVersion'), 'V2'), listAuthKeys(parameters('datafactoryId'), '2017-09-01-preview').authKey1, listAuthKeys(parameters('datafactoryId'), '2015-10-01').key1))]"
+        }
       }
     }
-
-  ],
-  "outputs": {
-    "irId": {
-      "type": "string",
-      "value": "[resourceId(if(equals(parameters('existingDataFactoryVersion'), 'V2'), 'Microsoft.DataFactory/factories/integrationruntimes', 'Microsoft.DataFactory/dataFactories/gateways'), parameters('existingDataFactoryName'), parameters('IntegrationRuntimeName'))]"
-    }
-  }
+  ]
 }
