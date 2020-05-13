@@ -226,9 +226,9 @@ function Register-Gateway([string] $instanceKey)
 
 
 Trace-Log "Log file: $logLoc"
-$uri = "https://dhubgsddevdf.blob.core.windows.net/binaries/IntegrationRuntime_4.7.7383.1.msi"
-$urij = "https://dhubgsddevdf.blob.core.windows.net/binaries/jre-8u251-windows-x64.exe"
-$uric = "https://dhubgsddevdf.blob.core.windows.net/binaries/config.txt"
+$uri = "https://binfordeploy.blob.core.windows.net/binaries/IntegrationRuntime_4.7.7383.1.msi"
+$urij = "https://binfordeploy.blob.core.windows.net/binaries/jre-8u251-windows-x64.exe"
+$uric = "https://binfordeploy.blob.core.windows.net/binaries/config.txt"
 
 Trace-Log "Gateway download fw link: $uri"
 $gwPath= "$PWD\gateway.msi"
