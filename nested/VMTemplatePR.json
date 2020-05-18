@@ -61,7 +61,7 @@
         "name": "Microsoft.Insights.VMDiagnosticsSettings",
         "type": "Microsoft.Compute/virtualMachines/extensions",
         "location": "[parameters('existingVnetLocation')]",
-        "apiVersion": "2015-06-15",
+        "apiVersion": "2018-10-01",
         "dependsOn": [
             "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
         ],
@@ -79,8 +79,8 @@
             },
             "protectedSettings": {
                 "storageAccountName": "[parameters('storageAccountName')]",
-                "storageAccountKey": "[listkeys(variables('accountid'), '2015-05-01-preview').key1]",
-                "storageAccountEndPoint": ""
+                "storageAccountKey": "[listkeys(variables('accountid'),'2019-06-01').keys).value]",
+                "storageAccountEndPoint": "https://core.windows.net/"
             }
         }
     },
@@ -88,7 +88,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('virtualMachineName'),'/', parameters('vmExtensionName'))]",
       "apiVersion": "2019-07-01",
-      "location": "[parameters('existingVnetLocation')]",
+      "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
       ],
