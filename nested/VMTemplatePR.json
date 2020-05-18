@@ -58,7 +58,7 @@
       }
     },
 	{
-        "name": "Microsoft.Insights.VMDiagnosticsSettings",
+        "name": "[concat(variables('vmName'),'Microsoft.Insights.VMDiagnosticsSettings')]",
         "type": "Microsoft.Compute/virtualMachines/extensions",
         "location": "[parameters('existingVnetLocation')]",
         "apiVersion": "2018-10-01",
@@ -88,7 +88,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('virtualMachineName'),'/', parameters('vmExtensionName'))]",
       "apiVersion": "2019-07-01",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('existingVnetLocation')]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
       ],
