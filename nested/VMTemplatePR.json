@@ -59,7 +59,7 @@
 	{
       "name": "Microsoft.Insights.VMDiagnosticsSettings",
       "type": "extensions",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('existingVnetLocation')]",
       "apiVersion": "2015-06-15",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
@@ -87,7 +87,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('virtualMachineName'),'/', parameters('vmExtensionName'))]",
       "apiVersion": "2019-07-01",
-      "location": "[resourceGroup().location]",
+      "location": "[parameters('existingVnetLocation')]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
       ],
@@ -120,7 +120,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('virtualMachineName'), '/DependencyAgent')]",
       "apiVersion": "2017-03-30",
-      "location": "West Europe",
+      "location": "[parameters('existingVnetLocation')]",
       "properties": {
           "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
           "type": "DependencyAgentWindows",
