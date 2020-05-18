@@ -58,7 +58,7 @@
     },
 	{
       "name": "Microsoft.Insights.VMDiagnosticsSettings",
-      "type": "extensions",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[parameters('existingVnetLocation')]",
       "apiVersion": "2015-06-15",
       "dependsOn": [
