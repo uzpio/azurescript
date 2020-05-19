@@ -58,42 +58,84 @@
       }
     },
 	{
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('virtualMachineName'),'/', parameters('vmExtensionName'))]",
-      "apiVersion": "2019-07-01",
-      "location": "[parameters('existingVnetLocation')]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
-      ],
-
-      "properties": {
-        "publisher": "Microsoft.Azure.Security",
-        "type": "IaaSAntimalware",
-        "typeHandlerVersion": "1.3",
-        "autoUpgradeMinorVersion": true,
-        "settings": {
-          "AntimalwareEnabled": "true",
-          "Exclusions": {
-            "Extensions": ".log;.ldf",
-            "Paths": "D:\\IISlogs;D:\\DatabaseLogs",
-            "Processes": "mssence.svc"
-          },
-
-          "RealtimeProtectionEnabled": "true",
-          "ScheduledScanSettings": {
-            "isEnabled": "true",
-            "scanType": "Quick",
-            "day": "7",
-            "time": "120"
-          }
+          "type": "Microsoft.Compute/virtualMachines/providers/serverVulnerabilityAssessments",
+          "name": "[concat(parameters('virtualMachineName'), '/Microsoft.Security/default')]",
+          "apiVersion": "2015-06-01-preview",
+		   "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
+        ]
+    },
+	{
+        "name": "microsoft.antimalware-windows-20200519150255",
+        "apiVersion": "2015-01-01",
+        "type": "Microsoft.Resources/deployments",
+        "properties": {
+            "mode": "incremental",
+            "templateLink": {
+                "uri": "https://gallery.azure.com/artifact/20161101/microsoft.antimalware-windows-arm.1.0.2/Artifacts/MainTemplate.json"
+            },
+            "parameters": {
+                "vmName": {
+                    "value": "parameters('virtualMachineName')"
+                },
+                "location": {
+                    "value": "parameters('existingVnetLocation')"
+                },
+                "RealtimeProtectionEnabled": {
+                    "value": "true"
+                },
+                "ScheduledScanSettingsIsEnabled": {
+                    "value": "false"
+                },
+                "ScheduledScanSettingsScanType": {
+                    "value": "Quick"
+                },
+                "ScheduledScanSettingsDay": {
+                    "value": "7"
+                },
+                "ScheduledScanSettingsTime": {
+                    "value": "120"
+                }
+            }
         },
-        "protectedSettings": null
-      }
-	},
+        "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
+        ]
+    },
+	{
+        "name": "[concat(variables('virtualMachineName'),'Microsoft.Insights.VMDiagnosticsSettings')]",
+        "type": "Microsoft.Compute/virtualMachines/extensions", 
+        "location": "[parameters('existingVnetLocation')]",
+        "apiVersion": "2018-10-01",
+        "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
+        ],
+        "tags": {
+            "displayName": "AzureDiagnostics"
+        },
+        "properties": {
+            "publisher": "Microsoft.Azure.Diagnostics",
+            "type": "IaaSDiagnostics",
+            "typeHandlerVersion": "1.5",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+                "xmlCfg": "[base64(concat(variables('wadcfgxstart'), variables('wadmetricsresourceid'), variables('virtualMachineName'), variables('wadcfgxend')))]",
+                "storageAccount": "[parameters('storageAccountName')]"
+            },
+            "protectedSettings": {
+                "storageAccountName": "[parameters('storageAccountName')]",
+                "storageAccountKey": "[first(listKeys(parameters('AccountId'),'2019-06-01').keys).value]",
+                "storageAccountEndPoint": "https://core.windows.net/"
+            }
+        }
+    },
 	{
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('virtualMachineName'), '/DependencyAgent')]",
       "apiVersion": "2017-03-30",
+	  "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
+        ],
       "location": "[parameters('existingVnetLocation')]",
       "properties": {
           "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
