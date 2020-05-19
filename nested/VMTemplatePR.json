@@ -57,11 +57,11 @@
         "publicIPAllocationMethod": "Dynamic"
       }
     },
-	{
+	/*{
         "name": "[concat(variables('vmName'),'Microsoft.Insights.VMDiagnosticsSettings')]",
-        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "type": "Microsoft.Compute/virtualMachines/extensions", 
         "location": "[parameters('existingVnetLocation')]",
-        "apiVersion": "2015-06-15",
+        "apiVersion": "2019-07-01",
         "dependsOn": [
             "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
         ],
@@ -83,7 +83,7 @@
                 "storageAccountEndPoint": "https://core.windows.net/"
             }
         }
-    },
+    },*/
 	{
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('virtualMachineName'),'/', parameters('vmExtensionName'))]",
