@@ -61,7 +61,7 @@
         "name": "[concat(variables('vmName'),'Microsoft.Insights.VMDiagnosticsSettings')]",
         "type": "Microsoft.Compute/virtualMachines/extensions",
         "location": "[parameters('existingVnetLocation')]",
-        "apiVersion": "2018-10-01",
+        "apiVersion": "2015-06-15",
         "dependsOn": [
             "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
         ],
@@ -79,7 +79,7 @@
             },
             "protectedSettings": {
                 "storageAccountName": "[parameters('storageAccountName')]",
-                "storageAccountKey": "[listkeys(variables('accountid'),'2019-06-01').keys).value]",
+                "storageAccountKey": "[listkeys(variables('accountid'), '2019-07-01').keys).value]",
                 "storageAccountEndPoint": "https://core.windows.net/"
             }
         }
