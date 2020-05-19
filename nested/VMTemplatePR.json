@@ -58,33 +58,6 @@
       }
     },
 	{
-        "name": "[concat(variables('vmName'),'Microsoft.Insights.VMDiagnosticsSettings')]",
-        "type": "Microsoft.Compute/virtualMachines/extensions",
-        "location": "[parameters('existingVnetLocation')]",
-        "apiVersion": "2015-06-15",
-        "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
-        ],
-        "tags": {
-            "displayName": "AzureDiagnostics"
-        },
-        "properties": {
-            "publisher": "Microsoft.Azure.Diagnostics",
-            "type": "IaaSDiagnostics",
-            "typeHandlerVersion": "1.5",
-            "autoUpgradeMinorVersion": true,
-            "settings": {
-                "xmlCfg": "[base64(concat(variables('wadcfgxstart'), variables('wadmetricsresourceid'), variables('virtualMachineName'), variables('wadcfgxend')))]",
-                "storageAccount": "[parameters('storageAccountName')]"
-            },
-            "protectedSettings": {
-                "storageAccountName": "[parameters('storageAccountName')]",
-                "storageAccountKey": "[listkeys(variables('accountid'), '2019-07-01').keys).value]",
-                "storageAccountEndPoint": "https://core.windows.net/"
-            }
-        }
-    },
-	{
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "[concat(parameters('virtualMachineName'),'/', parameters('vmExtensionName'))]",
       "apiVersion": "2019-07-01",
