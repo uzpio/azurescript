@@ -45,7 +45,8 @@
 	"wadperfcounters2": "<PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\% Disk Read Time\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Disk active read time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\% Disk Write Time\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Disk active write time\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Transfers/sec\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Disk operations\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Reads/sec\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Disk read operations\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Writes/sec\" sampleRate=\"PT15S\" unit=\"CountPerSecond\"><annotation displayName=\"Disk write operations\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Bytes/sec\" sampleRate=\"PT15S\" unit=\"BytesPerSecond\"><annotation displayName=\"Disk speed\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Read Bytes/sec\" sampleRate=\"PT15S\" unit=\"BytesPerSecond\"><annotation displayName=\"Disk read speed\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\PhysicalDisk(_Total)\\Disk Write Bytes/sec\" sampleRate=\"PT15S\" unit=\"BytesPerSecond\"><annotation displayName=\"Disk write speed\" locale=\"en-us\"/></PerformanceCounterConfiguration><PerformanceCounterConfiguration counterSpecifier=\"\\LogicalDisk(_Total)\\% Free Space\" sampleRate=\"PT15S\" unit=\"Percent\"><annotation displayName=\"Disk free space (percentage)\" locale=\"en-us\"/></PerformanceCounterConfiguration></PerformanceCounters>",
 	"wadcfgxstart": "[concat(variables('wadlogs'), variables('wadperfcounters1'), variables('wadperfcounters2'), '<Metrics resourceId=\"')]",
 	"wadmetricsresourceid": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name , '/providers/', 'Microsoft.Compute/virtualMachines/')]",
-	"wadcfgxend": "\"><MetricAggregation scheduledTransferPeriod=\"PT1H\"/><MetricAggregation scheduledTransferPeriod=\"PT1M\"/></Metrics></DiagnosticMonitorConfiguration></WadCfg>"
+	"wadcfgxend": "\"><MetricAggregation scheduledTransferPeriod=\"PT1H\"/><MetricAggregation scheduledTransferPeriod=\"PT1M\"/></Metrics></DiagnosticMonitorConfiguration></WadCfg>",
+	"virtualMachineName": "[parameters('virtualMachineName')]"
   },
   "resources": [
     {
@@ -58,52 +59,7 @@
       }
     },
 	{
-          "type": "Microsoft.Compute/virtualMachines/providers/serverVulnerabilityAssessments",
-          "name": "[concat(parameters('virtualMachineName'), '/Microsoft.Security/default')]",
-          "apiVersion": "2015-06-01-preview",
-		   "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
-        ]
-    },
-	{
-        "name": "microsoft.antimalware-windows-20200519150255",
-        "apiVersion": "2015-01-01",
-        "type": "Microsoft.Resources/deployments",
-        "properties": {
-            "mode": "incremental",
-            "templateLink": {
-                "uri": "https://gallery.azure.com/artifact/20161101/microsoft.antimalware-windows-arm.1.0.2/Artifacts/MainTemplate.json"
-            },
-            "parameters": {
-                "vmName": {
-                    "value": "parameters('virtualMachineName')"
-                },
-                "location": {
-                    "value": "parameters('existingVnetLocation')"
-                },
-                "RealtimeProtectionEnabled": {
-                    "value": "true"
-                },
-                "ScheduledScanSettingsIsEnabled": {
-                    "value": "false"
-                },
-                "ScheduledScanSettingsScanType": {
-                    "value": "Quick"
-                },
-                "ScheduledScanSettingsDay": {
-                    "value": "7"
-                },
-                "ScheduledScanSettingsTime": {
-                    "value": "120"
-                }
-            }
-        },
-        "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
-        ]
-    },
-	{
-        "name": "[concat(variables('virtualMachineName'),'Microsoft.Insights.VMDiagnosticsSettings')]",
+        "name": "[concat(parameters('virtualMachineName'), '/Microsoft.Insights.VMDiagnosticsSettings')]",
         "type": "Microsoft.Compute/virtualMachines/extensions", 
         "location": "[parameters('existingVnetLocation')]",
         "apiVersion": "2018-10-01",
@@ -124,7 +80,7 @@
             },
             "protectedSettings": {
                 "storageAccountName": "[parameters('storageAccountName')]",
-                "storageAccountKey": "[first(listKeys(parameters('AccountId'),'2019-06-01').keys).value]",
+                 "storageAccountKey": "[first(listKeys(parameters('AccountId'),'2019-06-01').keys).value]",
                 "storageAccountEndPoint": "https://core.windows.net/"
             }
         }
@@ -191,7 +147,10 @@
         },
         "storageProfile": {
 		   "imageReference": {
-                        "id": "/subscriptions/e7abdf95-8a12-4d7f-9f3a-87a3cb0e7687/resourceGroups/DHUB_GSD-DEV-AUX/providers/Microsoft.Compute/images/vm0-irruntimena-image-v2"
+				 "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2016-Datacenter",
+                        "version": "latest"
 			},
 
           "osDisk": {
