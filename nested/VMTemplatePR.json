@@ -8,9 +8,6 @@
 			"description": "The resource group for the data factory"
 		}
 	},
-	"vmExtensionName": {
-	  "type": "string"
-	},
     "virtualMachineName": {
       "type": "string"
     },
