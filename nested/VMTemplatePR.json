@@ -109,7 +109,7 @@
               "KeyVaultURL": "[parameters('keyVaultURL')]",
               "KeyVaultResourceId": "[parameters('keyVaultResourceId')]",
               "KeyEncryptionKeyURL": "[parameters('keyEncryptionKeyURL')]",
-              "KeyVaultResourceId": "[parameters('keyVaultResourceId')]",
+              "KekVaultResourceId": "[parameters('keyVaultResourceId')]",
               "VolumeType": "All",
               "ResizeOSDisk": "false"
               }
