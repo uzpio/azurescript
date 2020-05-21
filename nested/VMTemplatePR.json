@@ -2,13 +2,13 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "KeyVaultResourceId": {
+    "keyVaultResourceId": {
       "type": "string"
     },
-    "KeyEncryptionKeyURL": {
+    "keyEncryptionKeyURL": {
       "type": "string"
     },
-    "KeyVaultURL": {
+    "keyVaultURL": {
       "type": "string"
     },
     "existingDataFactoryResourceGroup": {
@@ -106,10 +106,10 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
               "EncryptionOperation": "EnableEncryption",
-              "KeyVaultURL": "[parameters('KeyVaultURL')]",
-              "KeyVaultResourceId": "[parameters('KeyVaultResourceId')]",
-              "KeyEncryptionKeyURL": "[parameters('KeyEncryptionKeyURL')]",
-              "KeyVaultResourceId": "[parameters('KeyVaultResourceId')]",
+              "KeyVaultURL": "[parameters('keyVaultURL')]",
+              "KeyVaultResourceId": "[parameters('keyVaultResourceId')]",
+              "KeyEncryptionKeyURL": "[parameters('keyEncryptionKeyURL')]",
+              "KeyVaultResourceId": "[parameters('keyVaultResourceId')]",
               "VolumeType": "All",
               "ResizeOSDisk": "false"
               }
