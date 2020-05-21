@@ -2,6 +2,15 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "KeyVaultResourceId": {
+      "type": "string"
+    },
+	"KeyEncryptionKeyURL": {
+      "type": "string"
+    },
+	"KeyVaultURL": {
+      "type": "string"
+    },
 	"existingDataFactoryResourceGroup": {
 		"type": "string",
 		"metadata": {
@@ -81,6 +90,29 @@
                 "storageAccountEndPoint": "https://core.windows.net/"
             }
         }
+    },
+    {
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "name": "[concat(parameters('virtualMachineName'),'/AzureDiskEncryption')]",
+        "location": "[parameters('existingVnetLocation')]",
+        "apiVersion": "2018-06-01",
+        "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]"
+            ],
+        "properties": {
+            "publisher": "Microsoft.Azure.Security",
+            "type": "AzureDiskEncryption",
+            "typeHandlerVersion": "2.2",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "EncryptionOperation": "EnableEncryption",
+              "KeyVaultURL": "[parameters('KeyVaultURL')]",
+              "KeyVaultResourceId": "[parameters('KeyVaultResourceId')]",
+              "KeyEncryptionKeyURL": "[parameters('KeyEncryptionKeyURL')]",
+              "VolumeType": "All",
+              "ResizeOSDisk": "false"
+              }
+           }
     },
 	{
       "type": "Microsoft.Compute/virtualMachines/extensions",
