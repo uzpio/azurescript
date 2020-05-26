@@ -2,6 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "log_analytics_workspace_id": {
+      "type": "string"
+    },
+	"log_analytics_workspace_key": {
+      "type": "string"
+    },
     "keyVaultResourceId": {
       "type": "string"
     },
@@ -183,6 +189,27 @@
         },
         "protectedSettings": null
       }
+    },
+	{
+        "type": "Microsoft.Compute/virtualMachines/extensions",
+        "name": "[concat(parameters('virtualMachineName'),'/LogAnalytics')]",
+        "apiVersion": "2019-07-01",
+        "location": "[parameters('existingVnetLocation')]",
+        "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', variables('virtualMachineName'))]"
+        ],
+        "properties": {
+            "publisher": "Microsoft.EnterpriseCloud.Monitoring",
+            "type": "MicrosoftMonitoringAgent",
+            "typeHandlerVersion": "1.0",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+                "workspaceId": "[parameters('log_analytics_workspace_id')]"
+            },
+            "protectedSettings": {
+                "workspaceKey": "[parameters('log_analytics_workspace_key')]"
+            }
+        }
     },
     {
       "apiVersion": "2019-09-01",
